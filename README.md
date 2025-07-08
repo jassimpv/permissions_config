@@ -1,18 +1,8 @@
-# 🚀 Permission Configurator
+# 🚀 Permission Config
 
 A Flutter CLI plugin that **automatically adds Android/iOS permissions** (Camera, Microphone, Location) into your Flutter project and generates a runtime permission handler file. Stop manually editing `AndroidManifest.xml` and `Info.plist` — this tool does it for you!
 
 ---
-
-/\*\*
-
-- Initializes the platform-specific features for the application.
--
-- Currently supports Android and iOS platforms. Support for additional platforms is under development.
--
-- @param config Configuration options for platform initialization.
-- @returns A promise that resolves when initialization is complete.
-  \*/
 
 ## ✨ Features
 
@@ -30,7 +20,7 @@ A Flutter CLI plugin that **automatically adds Android/iOS permissions** (Camera
 Activate this plugin globally:
 
 ```bash
-dart pub global activate permission_configurator
+dart pub global activate permission_config
 ```
 
 ---
@@ -40,7 +30,7 @@ dart pub global activate permission_configurator
 Navigate to your Flutter project root and run:
 
 ```bash
-permission_configurator <permission> [optional-ios-message]
+permission_config <permission> [optional-ios-message]
 ```
 
 Supported values for `<permission>`:
@@ -52,112 +42,29 @@ Supported values for `<permission>`:
 **Examples:**
 
 ```bash
-permission_configurator camera
-permission_configurator mic "This app needs mic access for voice chat."
-permission_configurator location
+permission_config camera
+permission_config mic "This app needs mic access for voice chat."
+permission_config location
 ```
 
----
+## 💾 Backups:
 
-## 📁 What It Does
-
-**Modifies:**
-
-- `android/app/src/main/AndroidManifest.xml`
-- `ios/Runner/Info.plist`
-
-**Creates:**
-
-- `lib/Utils/permission_handler.dart` file with ready-to-use permission request logic
-
-**Adds:**
-
-- `permission_handler` dependency via `flutter pub add`
-
-**Backups:**
-
-- Creates `.bak` files for AndroidManifest and Info.plist before modifying
-
----
-
-## 🧠 Internal Logic
-
-| Permission | Android Permissions                              | iOS Keys                                                                              |
-| ---------- | ------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| Camera     | `android.permission.CAMERA`                      | `NSCameraUsageDescription`                                                            |
-| Microphone | `android.permission.RECORD_AUDIO`                | `NSMicrophoneUsageDescription`                                                        |
-| Location   | `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION` | `NSLocationWhenInUseUsageDescription`, `NSLocationAlwaysAndWhenInUseUsageDescription` |
-
----
-
-## 📄 permission_handler.dart
-
-The generated file contains:
-
-- Methods to request and check permissions
-- Alerts for denied and permanently denied states
-- Automatic redirection to app settings if needed
-
-Located at:  
-`lib/Utils/permission_handler.dart`
-
----
-
-## 🧰 Dependencies Used
-
-This plugin uses the following Dart packages:
-
-- `xml`
-- `logger`
-- `path`
-
----
-
-## 💻 Development
-
-To run locally:
-
-```bash
-dart run bin/main.dart <permission>
-```
-
-Or make it executable globally by setting up in your `pubspec.yaml`:
-
-```yaml
-executables:
-  permission_configurator: bin/main.dart
-```
-
----
-
-## ✅ Example Output
-
-```bash
-permission_configurator camera
-
-[✓] permission_handler added successfully.
-[✓] Android permission "android.permission.CAMERA" added.
-[✓] iOS permission "NSCameraUsageDescription" added.
-[✓] Created lib/Utils/permission_handler.dart
-```
-
----
+`.bak` files for AndroidManifest and Info.plist before any changes
 
 ## 📃 License
 
 MIT License  
-© 2025 [Your Name]
-
----
+© 2025 Mohammed Jassim
 
 ## 🙌 Contribute
 
 Found an issue or want a new permission added? PRs and issues are welcome!
 
----
-
 ## ✍️ Author
 
-Your Name  
-GitHub: github.com/yourusername  
-Email: [yourname@example.com]
+**Mohammed Jassim**  
+Flutter & Dart Developer
+
+GitHub: [jassimpv](https://github.com/jassimpv)
+
+Feel free to reach out for questions, feedback, or contributions!
