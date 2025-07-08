@@ -1,70 +1,65 @@
 # 🚀 Permission Config
 
-A Flutter CLI plugin that **automatically adds Android/iOS permissions** (Camera, Microphone, Location) into your Flutter project and generates a runtime permission handler file. Stop manually editing `AndroidManifest.xml` and `Info.plist` — this tool does it for you!
+A **Flutter CLI plugin** that **automatically adds Android/iOS permissions** (Camera, Microphone, Location) to your Flutter project and generates a ready-to-use runtime permission handler file.  
+Say goodbye to manually editing `AndroidManifest.xml` and `Info.plist` — this tool does it all for you!
 
 ---
 
 ## ✨ Features
 
 - ✅ Add permissions for **Camera**, **Microphone**, and **Location**
-- ✅ Automatically injects required Android and iOS permission entries
-- ✅ Creates a pre-written `permission_handler.dart` file under `lib/Utils/`
-- ✅ Adds `permission_handler` to your `pubspec.yaml` automatically
-- ✅ Backs up original platform config files (`.bak`)
-- ✅ Uses `logger` for clean and clear CLI output
+- ⚙️ Automatically injects required Android and iOS permission entries
+- 📁 Generates a pre-written `permission_handler.dart` file under `lib/Utils/`
+- 📦 Adds `permission_handler` dependency automatically in your `pubspec.yaml`
+- 💾 Creates backup files (`.bak`) before modifying platform configs
+- 📝 Uses `logger` for clean, informative CLI output
 
 ---
 
 ## 📦 Installation
 
-Activate this plugin globally:
+Activate the plugin globally with Dart pub:
 
-```bash
-dart pub global activate permission_config
-```
+    dart pub global activate permission_config
 
 ---
 
 ## 🔧 Usage
 
-Navigate to your Flutter project root and run:
+Run this command inside your Flutter project root:
 
-```bash
-permission_config <permission> [optional-ios-message]
-```
+    permission_config <permission> [optional-ios-message]
 
-Supported values for `<permission>`:
+### Supported permissions:
 
-- `camera`
-- `microphone` or `mic`
-- `location`
+| Permission   | Aliases | Description                        |
+| ------------ | ------- | ---------------------------------- |
+| `camera`     | -       | Access to the device camera        |
+| `microphone` | `mic`   | Access to the microphone           |
+| `location`   | -       | Access to device location services |
 
-**Examples:**
+### Examples:
 
-```bash
-permission_config camera
-permission_config mic "This app needs mic access for voice chat."
-permission_config location
-```
+    permission_config camera
+    permission_config mic "This app needs mic access for voice chat."
+    permission_config location
 
-## 💾 Backups:
+---
 
-`.bak` files for AndroidManifest and Info.plist before any changes
+## 💾 Backup Files
 
-## 📃 License
+Before applying changes, backups are created:
 
-MIT License  
-© 2025 Mohammed Jassim
+- `AndroidManifest.xml.bak`
+- `Info.plist.bak`
 
-## 🙌 Contribute
+---
 
-Found an issue or want a new permission added? PRs and issues are welcome!
+## 🙌 Contribution
 
-## ✍️ Author
+Found a bug or want to add more permissions?  
+Feel free to open an issue or submit a pull request! Your contributions are welcome. 💙
 
-**Mohammed Jassim**  
-Flutter & Dart Developer
+---
 
-GitHub: [jassimpv](https://github.com/jassimpv)
-
-Feel free to reach out for questions, feedback, or contributions!
+### Happy coding! 🚀
