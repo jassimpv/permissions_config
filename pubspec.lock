@@ -9,22 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
-  flutter_lints:
-    dependency: "direct dev"
-    description:
-      name: flutter_lints
-      sha256: "9e8c3858111da373efc5aa341de011d9bd23e2c5c5e0c62bccf32438e192d7b1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.2"
-  lints:
-    dependency: transitive
-    description:
-      name: lints
-      sha256: cbf8d4b858bb0134ef3ef87841abdf8d63bfc255c266b7bf6b39daa1085c4290
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   logger:
     dependency: "direct main"
     description:
@@ -57,30 +41,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
-  source_span:
-    dependency: transitive
-    description:
-      name: source_span
-      sha256: "254ee5351d6cb365c859e20ee823c3bb479bf4a293c22d17a9f1bf144ce86f7c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.10.1"
-  string_scanner:
-    dependency: transitive
-    description:
-      name: string_scanner
-      sha256: "921cd31725b72fe181906c6a94d987c78e3b98c2e205b397ea399d4054872b43"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.1"
-  term_glyph:
-    dependency: transitive
-    description:
-      name: term_glyph
-      sha256: "7f554798625ea768a7518313e58f83891c7f5024f88e46e7182a4558850a4b8e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.2"
   xml:
     dependency: "direct main"
     description:
@@ -89,13 +49,5 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.6.0"
-  yaml:
-    dependency: "direct main"
-    description:
-      name: yaml
-      sha256: b9da305ac7c39faa3f030eccd175340f968459dae4af175130b3fc47e40d76ce
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.3"
 sdks:
   dart: ">=3.8.0 <4.0.0"

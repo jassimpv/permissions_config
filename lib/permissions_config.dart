@@ -1,3 +1,3 @@
-int calculate() {
-  return 6 * 7;
-}
+library permission_config;
+
+export 'src/handler.dart';
