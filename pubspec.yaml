@@ -14,4 +14,4 @@ dev_dependencies:
   flutter_lints: ^3.0.1
 
 executables:
-  add_permission: permissions_config
+  permissions_config: permissions_config
