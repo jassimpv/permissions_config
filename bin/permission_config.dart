@@ -131,16 +131,15 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
   logger.d('✅ Added iOS permission "$key".');
 }
 
-void main(List<String> args, message) async {
-  var logger = Logger();
-
-  logger.d("Logger is working!");
+void main(List<String> args) async {
+  final logger = Logger();
 
   if (args.isEmpty) {
-    logger.d('Usage: add_permission <camera|microphone|location>');
+    logger.d(
+        'Usage: add_permission <camera|microphone|location|storage|bluetooth|sensors|contacts|calendar|photos|notifications|speech|all>');
     exit(1);
   }
-  // Add permission_handler to pubspec.yaml using flutter pub add
+
   logger.d('Adding permission_handler to pubspec.yaml...');
   final result =
       await Process.run('flutter', ['pub', 'add', 'permission_handler']);
@@ -154,7 +153,8 @@ void main(List<String> args, message) async {
   await createPermissionHandlerFile(projectRoot, logger);
 
   final permission = args[0].toLowerCase();
-  // Fetch app name from pubspec.yaml
+
+  // Get app name
   String appName = 'This app';
   final pubspecFile = File('pubspec.yaml');
   if (await pubspecFile.exists()) {
@@ -168,33 +168,104 @@ void main(List<String> args, message) async {
     }
   }
 
+  String getMessage(String feature, [int argIndex = -1]) {
+    if (argIndex >= 0 &&
+        args.length > argIndex &&
+        args[argIndex].trim().isNotEmpty) {
+      return args[argIndex];
+    }
+    return '$appName requires $feature access for proper functionality.';
+  }
+
+  Future<void> handle(String perm) async {
+    switch (perm) {
+      case 'camera':
+        await addAndroidPermission('android.permission.CAMERA', logger);
+        await addiOSPermission(
+            'NSCameraUsageDescription', getMessage('camera'), logger);
+        break;
+      case 'microphone':
+      case 'mic':
+        await addAndroidPermission('android.permission.RECORD_AUDIO', logger);
+        await addiOSPermission(
+            'NSMicrophoneUsageDescription', getMessage('microphone'), logger);
+        break;
+      case 'location':
+        await addAndroidPermission(
+            'android.permission.ACCESS_FINE_LOCATION', logger);
+        await addAndroidPermission(
+            'android.permission.ACCESS_COARSE_LOCATION', logger);
+        await addiOSPermission('NSLocationWhenInUseUsageDescription',
+            getMessage('location'), logger);
+        await addiOSPermission('NSLocationAlwaysAndWhenInUseUsageDescription',
+            getMessage('location'), logger);
+        break;
+      case 'storage':
+        await addAndroidPermission(
+            'android.permission.READ_EXTERNAL_STORAGE', logger);
+        await addAndroidPermission(
+            'android.permission.WRITE_EXTERNAL_STORAGE', logger);
+        // No iOS permission required for storage
+        break;
+      case 'bluetooth':
+        await addAndroidPermission(
+            'android.permission.BLUETOOTH_CONNECT', logger);
+        await addiOSPermission('NSBluetoothAlwaysUsageDescription',
+            getMessage('Bluetooth'), logger);
+        break;
+      case 'sensors':
+        await addAndroidPermission('android.permission.BODY_SENSORS', logger);
+        await addiOSPermission(
+            'NSMotionUsageDescription', getMessage('sensor data'), logger);
+        break;
+      case 'contacts':
+        await addAndroidPermission('android.permission.READ_CONTACTS', logger);
+        await addiOSPermission(
+            'NSContactsUsageDescription', getMessage('contacts'), logger);
+        break;
+      case 'calendar':
+        await addAndroidPermission('android.permission.READ_CALENDAR', logger);
+        await addAndroidPermission('android.permission.WRITE_CALENDAR', logger);
+        await addiOSPermission(
+            'NSCalendarsUsageDescription', getMessage('calendar'), logger);
+        break;
+      case 'photos':
+        await addiOSPermission('NSPhotoLibraryUsageDescription',
+            getMessage('photo access'), logger);
+        break;
+      case 'notifications':
+        await addiOSPermission('NSUserNotificationAlertUsageDescription',
+            getMessage('notifications'), logger);
+        break;
+      case 'speech':
+        await addiOSPermission('NSSpeechRecognitionUsageDescription',
+            getMessage('speech recognition'), logger);
+        break;
+      default:
+        logger.d('Permission "$perm" not supported.');
+    }
+  }
+
   try {
-    if (permission == 'camera') {
-      final message = (args.length > 1 && args[1].trim().isNotEmpty)
-          ? args[1]
-          : '$appName requires camera access for proper functionality.';
-      await addAndroidPermission('android.permission.CAMERA', logger);
-      await addiOSPermission('NSCameraUsageDescription', message, logger);
-    } else if (permission == 'mic' || permission == 'microphone') {
-      final message = (args.length > 1 && args[1].trim().isNotEmpty)
-          ? args[1]
-          : '$appName requires microphone access for proper functionality.';
-      await addAndroidPermission('android.permission.RECORD_AUDIO', logger);
-      await addiOSPermission('NSMicrophoneUsageDescription', message, logger);
-    } else if (permission == 'location') {
-      final message = (args.length > 1 && args[1].trim().isNotEmpty)
-          ? args[1]
-          : '$appName requires location access for proper functionality.';
-      await addAndroidPermission(
-          'android.permission.ACCESS_FINE_LOCATION', logger);
-      await addAndroidPermission(
-          'android.permission.ACCESS_COARSE_LOCATION', logger);
-      await addiOSPermission(
-          'NSLocationWhenInUseUsageDescription', message, logger);
-      await addiOSPermission(
-          'NSLocationAlwaysAndWhenInUseUsageDescription', message, logger);
+    if (permission == 'all') {
+      final allPermissions = [
+        'camera',
+        'microphone',
+        'location',
+        'storage',
+        'bluetooth',
+        'sensors',
+        'contacts',
+        'calendar',
+        'photos',
+        'notifications',
+        'speech'
+      ];
+      for (final p in allPermissions) {
+        await handle(p);
+      }
     } else {
-      logger.d('Permission "$permission" not supported yet.');
+      await handle(permission);
     }
   } catch (e) {
     logger.d('Error: $e');

@@ -7,7 +7,7 @@ Say goodbye to manually editing `AndroidManifest.xml` and `Info.plist` — this 
 
 ## ✨ Features
 
-- ✅ Add permissions for **Camera**, **Microphone**, and **Location**
+- ✅ ✅ Supports permissions for **Camera**, **Microphone**, **Location**, **Storage**, **Bluetooth**, **Sensors**, **Contacts**, **Calendar**, **Photos**, **Notifications**, and **Speech Recognition**
 - ⚙️ Automatically injects required Android and iOS permission entries
 - 📁 Generates a pre-written `permission_handler.dart` file under `lib/Utils/`
 - 📦 Adds `permission_handler` dependency automatically in your `pubspec.yaml`
@@ -32,14 +32,25 @@ Run this command inside your Flutter project root:
 
 ### Supported permissions:
 
-| Permission   | Aliases | Description                        |
-| ------------ | ------- | ---------------------------------- |
-| `camera`     | -       | Access to the device camera        |
-| `microphone` | `mic`   | Access to the microphone           |
-| `location`   | -       | Access to device location services |
+| Permission      | Aliases        | Description                                             |
+| --------------- | -------------- | ------------------------------------------------------- |
+| `camera`        | -              | Access to the device camera                             |
+| `microphone`    | `mic`          | Access to the microphone                                |
+| `location`      | -              | Access to device location services (fine & coarse)      |
+| `storage`       | -              | Read/write external storage (Android only)              |
+| `bluetooth`     | -              | Access Bluetooth and BLE devices                        |
+| `sensors`       | -              | Access body sensors and motion data                     |
+| `contacts`      | -              | Access the user's contact list                          |
+| `calendar`      | -              | Access calendar events and reminders                    |
+| `photos`        | -              | Access the photo library (iOS only)                     |
+| `notifications` | -              | Access to send and display notifications (iOS only)     |
+| `speech`        | -              | Use speech recognition services (iOS only)              |
+| `all`           | -              | Adds **all** supported permissions above automatically  |
+| --------------  | -------------- | ------------------------------------------------------- |
 
 ### Examples:
 
+    permission_config all
     permission_config camera
     permission_config mic "This app needs mic access for voice chat."
     permission_config location
