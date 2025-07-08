@@ -1,0 +1,17 @@
+name: permissions_config
+version: 0.0.1
+description: CLI tool to add platform permissions like camera/mic/storage.
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  yaml: ^3.1.1
+  xml: ^6.3.0
+  path: any
+  logger: ^2.6.0
+
+dev_dependencies:
+  flutter_lints: ^3.0.1
+
+executables:
+  add_permission: permissions_config

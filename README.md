@@ -4,6 +4,16 @@ A Flutter CLI plugin that **automatically adds Android/iOS permissions** (Camera
 
 ---
 
+/\*\*
+
+- Initializes the platform-specific features for the application.
+-
+- Currently supports Android and iOS platforms. Support for additional platforms is under development.
+-
+- @param config Configuration options for platform initialization.
+- @returns A promise that resolves when initialization is complete.
+  \*/
+
 ## ✨ Features
 
 - ✅ Add permissions for **Camera**, **Microphone**, and **Location**
@@ -151,4 +161,3 @@ Found an issue or want a new permission added? PRs and issues are welcome!
 Your Name  
 GitHub: github.com/yourusername  
 Email: [yourname@example.com]
-# permissions_config
