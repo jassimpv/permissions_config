@@ -51,4 +51,4 @@ packages:
     version: "6.5.0"
 sdks:
   dart: ">=3.5.0 <4.0.0"
-  flutter: ">=1.10.0"
+  flutter: ">=1.20.0"
