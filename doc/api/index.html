@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="permission_config API docs, for the Dart programming language.">
+  <title>permission_config - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li class="self-crumb">permission_config package</li>
+  </ol>
+  <div class="self-name">permission_config</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="-permission-config">🚀 Permission Config</h1>
+<p>A <strong>Flutter CLI plugin</strong> that <strong>automatically adds Android/iOS permissions</strong> (Camera, Microphone, Location) to your Flutter project and generates a ready-to-use runtime permission handler file.<br>
+Say goodbye to manually editing <code>AndroidManifest.xml</code> and <code>Info.plist</code> — this tool does it all for you!</p>
+<hr>
+<h2 id="-features">✨ Features</h2>
+<ul>
+<li>✅ ✅ Supports permissions for <strong>Camera</strong>, <strong>Microphone</strong>, <strong>Location</strong>, <strong>Storage</strong>, <strong>Bluetooth</strong>, <strong>Sensors</strong>, <strong>Contacts</strong>, <strong>Calendar</strong>, <strong>Photos</strong>, <strong>Notifications</strong>, and <strong>Speech Recognition</strong></li>
+<li>⚙️ Automatically injects required Android and iOS permission entries</li>
+<li>📁 Generates a pre-written <code>permission_handler.dart</code> file under <code>lib/Utils/</code></li>
+<li>📦 Adds <code>permission_handler</code> dependency automatically in your <code>pubspec.yaml</code></li>
+<li>💾 Creates backup files (<code>.bak</code>) before modifying platform configs</li>
+<li>📝 Uses <code>logger</code> for clean, informative CLI output</li>
+</ul>
+<hr>
+<h2 id="-installation">📦 Installation</h2>
+<p>Activate the plugin globally with Dart pub:</p>
+<pre class="language-dart"><code>dart pub global activate permission_config
+</code></pre>
+<hr>
+<h2 id="-usage">🔧 Usage</h2>
+<p>Run this command inside your Flutter project root:</p>
+<pre class="language-dart"><code>permission_config &lt;permission&gt; [optional-ios-message]
+</code></pre>
+<h3 id="supported-permissions">Supported permissions:</h3>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Aliases</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>camera</code></td>
+<td>-</td>
+<td>Access to the device camera</td>
+</tr>
+<tr>
+<td><code>microphone</code></td>
+<td><code>mic</code></td>
+<td>Access to the microphone</td>
+</tr>
+<tr>
+<td><code>location</code></td>
+<td>-</td>
+<td>Access to device location services (fine &amp; coarse)</td>
+</tr>
+<tr>
+<td><code>storage</code></td>
+<td>-</td>
+<td>Read/write external storage (Android only)</td>
+</tr>
+<tr>
+<td><code>bluetooth</code></td>
+<td>-</td>
+<td>Access Bluetooth and BLE devices</td>
+</tr>
+<tr>
+<td><code>sensors</code></td>
+<td>-</td>
+<td>Access body sensors and motion data</td>
+</tr>
+<tr>
+<td><code>contacts</code></td>
+<td>-</td>
+<td>Access the user's contact list</td>
+</tr>
+<tr>
+<td><code>calendar</code></td>
+<td>-</td>
+<td>Access calendar events and reminders</td>
+</tr>
+<tr>
+<td><code>photos</code></td>
+<td>-</td>
+<td>Access the photo library (iOS only)</td>
+</tr>
+<tr>
+<td><code>notifications</code></td>
+<td>-</td>
+<td>Access to send and display notifications (iOS only)</td>
+</tr>
+<tr>
+<td><code>speech</code></td>
+<td>-</td>
+<td>Use speech recognition services (iOS only)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>all</code></th>
+<th>-</th>
+<th>Adds <strong>all</strong> supported permissions above automatically</th>
+</tr>
+</thead>
+</table>
+<h3 id="examples">Examples:</h3>
+<pre class="language-dart"><code>permission_config all
+permission_config camera
+permission_config mic "This app needs mic access for voice chat."
+permission_config location
+</code></pre>
+<hr>
+<h2 id="-backup-files">💾 Backup Files</h2>
+<p>Before applying changes, backups are created:</p>
+<ul>
+<li><code>AndroidManifest.xml.bak</code></li>
+<li><code>Info.plist.bak</code></li>
+</ul>
+<hr>
+<h2 id="-contribution">🙌 Contribution</h2>
+<p>Found a bug or want to add more permissions?<br>
+Feel free to open an issue or submit a pull request! Your contributions are welcome. 💙</p>
+<hr>
+<h3 id="happy-coding-">Happy coding! 🚀</h3>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="permission_config">
+  <span class="name"><a href="permission_config/">permission_config</a></span> 
+
+</dt>
+<dd>A Dart library for managing runtime permission configurations
+for both Android and iOS platforms using the <code>permission_handler</code> package.
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li class="self-crumb">permission_config package</li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">permission_config</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="permission_config/">permission_config</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    permission_config
+      0.0.6
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
