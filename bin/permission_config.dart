@@ -4,9 +4,15 @@ import 'package:path/path.dart' as p;
 import 'permissionhandler.dart';
 import 'package:logger/logger.dart';
 
+/// Path to the AndroidManifest.xml file
 const androidManifestPath = 'android/app/src/main/AndroidManifest.xml';
+
+/// Path to the iOS Info.plist file
 const iosPlistPath = 'ios/Runner/Info.plist';
 
+/// Creates the `permission_handler.dart` file inside `lib/Utils`
+///
+/// If the file already exists, it skips creation.
 Future<void> createPermissionHandlerFile(
     String projectRoot, Logger logger) async {
   final utilsDir = Directory(p.join(projectRoot, 'lib', 'Utils'));
@@ -28,7 +34,7 @@ Future<void> createPermissionHandlerFile(
   logger.d('Created permission_handler.dart at $filePath');
 }
 
-// Backup file utility
+/// Creates a `.bak` backup file of the given [path] if it doesn't already exist.
 Future<void> backupFile(String path, Logger logger) async {
   final file = File(path);
   if (await file.exists()) {
@@ -41,7 +47,7 @@ Future<void> backupFile(String path, Logger logger) async {
   }
 }
 
-// Restore backup utility
+/// Restores a `.bak` backup file to the original [path].
 Future<void> restoreBackup(String path, Logger logger) async {
   final backupPath = '$path.bak';
   final backupFile = File(backupPath);
@@ -51,7 +57,9 @@ Future<void> restoreBackup(String path, Logger logger) async {
   }
 }
 
-// Add Android permission safely
+/// Adds a permission to AndroidManifest.xml safely if not already present.
+///
+/// [permissionName] is the full name like `android.permission.CAMERA`.
 Future<void> addAndroidPermission(String permissionName, Logger logger) async {
   final file = File(androidManifestPath);
   if (!await file.exists()) {
@@ -62,7 +70,6 @@ Future<void> addAndroidPermission(String permissionName, Logger logger) async {
   await backupFile(androidManifestPath, logger);
 
   final xmlDoc = XmlDocument.parse(await file.readAsString());
-
   final manifest = xmlDoc.getElement('manifest');
   if (manifest == null) {
     logger.d('Error: <manifest> element not found in AndroidManifest.xml');
@@ -95,8 +102,9 @@ Future<void> addAndroidPermission(String permissionName, Logger logger) async {
   logger.d('✅ Added Android permission "$permissionName".');
 }
 
-// Add iOS permission safely (using XML parsing)
-
+/// Adds a permission entry to iOS Info.plist if not already present.
+///
+/// [key] is the Info.plist permission key, [message] is the user-visible message.
 Future<void> addiOSPermission(String key, String message, Logger logger) async {
   final file = File(iosPlistPath);
   if (!await file.exists()) {
@@ -111,19 +119,15 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
 
   final dict = xmlDoc.findAllElements('dict').first;
 
-  // Check if the key already exists
-  final keys = dict.findElements('key').map((e) => e.text).toList();
+  final keys = dict.findElements('key').map((e) => e.name).toList();
   if (keys.contains(key)) {
     logger.d('✔️ iOS permission "$key" already present.');
     return;
   }
 
-  // Create new key and string elements
   final keyElement = XmlElement(XmlName('key'), [], [XmlText(key)]);
   final stringElement = XmlElement(XmlName('string'), [], [XmlText(message)]);
 
-  // Insert before the closing </dict> tag
-  // In XML DOM, append to the dict's children
   dict.children.add(keyElement);
   dict.children.add(stringElement);
 
@@ -131,6 +135,13 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
   logger.d('✅ Added iOS permission "$key".');
 }
 
+/// Main CLI entry point to add permissions to Android and iOS projects.
+///
+/// Usage:
+/// ```bash
+/// dart run add_permission.dart camera
+/// dart run add_permission.dart all
+/// ```
 void main(List<String> args) async {
   final logger = Logger();
 
@@ -154,7 +165,6 @@ void main(List<String> args) async {
 
   final permission = args[0].toLowerCase();
 
-  // Get app name
   String appName = 'This app';
   final pubspecFile = File('pubspec.yaml');
   if (await pubspecFile.exists()) {
@@ -205,7 +215,6 @@ void main(List<String> args) async {
             'android.permission.READ_EXTERNAL_STORAGE', logger);
         await addAndroidPermission(
             'android.permission.WRITE_EXTERNAL_STORAGE', logger);
-        // No iOS permission required for storage
         break;
       case 'bluetooth':
         await addAndroidPermission(
