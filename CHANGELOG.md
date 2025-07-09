@@ -8,7 +8,7 @@
 
 - Update the Readme.md file
 
-## [0.0.5]
+## [0.0.6]
 
 - Added support for **additional permissions**: storage, Bluetooth, sensors, contacts, calendar, photos, notifications, and speech recognition.
 - Introduced `"all"` option to add all supported permissions in one command.
