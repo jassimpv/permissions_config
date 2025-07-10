@@ -119,8 +119,8 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
 
   final dict = xmlDoc.findAllElements('dict').first;
 
-  final keys = dict.findElements('key').map((e) => e.name).toList();
-  if (keys.contains(key)) {
+  List<XmlName> keys = dict.findElements('key').map((e) => e.name).toList();
+  if (keys.contains(XmlName(key))) {
     logger.d('✔️ iOS permission "$key" already present.');
     return;
   }
