@@ -8,6 +8,7 @@ environment:
 
 flutter:
   plugin:
+    implements: permission_config
     platforms:
       android:
         default_package: permission_config
