@@ -1,3 +1,7 @@
+## [0.0.11]
+
+- Change logger level from debug to info for permission handling operations
+
 ## [0.0.10]
 
 - Fix: add missing implements directive for flutter plugin

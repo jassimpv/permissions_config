@@ -19,19 +19,19 @@ Future<void> createPermissionHandlerFile(
 
   if (!await utilsDir.exists()) {
     await utilsDir.create(recursive: true);
-    logger.d('Created folder: ${utilsDir.path}');
+    logger.i('Created folder: ${utilsDir.path}');
   }
 
   final filePath = p.join(utilsDir.path, 'permission_handler.dart');
   final file = File(filePath);
 
   if (await file.exists()) {
-    logger.d('File already exists at $filePath, skipping creation.');
+    logger.i('File already exists at $filePath, skipping creation.');
     return;
   }
 
   await file.writeAsString(permissionHandlerContent);
-  logger.d('Created permission_handler.dart at $filePath');
+  logger.i('Created permission_handler.dart at $filePath');
 }
 
 /// Creates a `.bak` backup file of the given [path] if it doesn't already exist.
@@ -42,7 +42,7 @@ Future<void> backupFile(String path, Logger logger) async {
     final backupFile = File(backupPath);
     if (!await backupFile.exists()) {
       await file.copy(backupPath);
-      logger.d('Backup created at $backupPath');
+      logger.i('Backup created at $backupPath');
     }
   }
 }
@@ -53,7 +53,7 @@ Future<void> restoreBackup(String path, Logger logger) async {
   final backupFile = File(backupPath);
   if (await backupFile.exists()) {
     await backupFile.copy(path);
-    logger.d('Restored $path from backup.');
+    logger.i('Restored $path from backup.');
   }
 }
 
@@ -63,7 +63,7 @@ Future<void> restoreBackup(String path, Logger logger) async {
 Future<void> addAndroidPermission(String permissionName, Logger logger) async {
   final file = File(androidManifestPath);
   if (!await file.exists()) {
-    logger.d('AndroidManifest.xml not found at $androidManifestPath');
+    logger.i('AndroidManifest.xml not found at $androidManifestPath');
     return;
   }
 
@@ -72,7 +72,7 @@ Future<void> addAndroidPermission(String permissionName, Logger logger) async {
   final xmlDoc = XmlDocument.parse(await file.readAsString());
   final manifest = xmlDoc.getElement('manifest');
   if (manifest == null) {
-    logger.d('Error: <manifest> element not found in AndroidManifest.xml');
+    logger.i('Error: <manifest> element not found in AndroidManifest.xml');
     return;
   }
 
@@ -81,7 +81,7 @@ Future<void> addAndroidPermission(String permissionName, Logger logger) async {
       .any((e) => e.getAttribute('android:name') == permissionName);
 
   if (existing) {
-    logger.d('✔️ Android permission "$permissionName" already present.');
+    logger.i('✔️ Android permission "$permissionName" already present.');
     return;
   }
 
@@ -99,7 +99,7 @@ Future<void> addAndroidPermission(String permissionName, Logger logger) async {
   }
 
   await file.writeAsString(xmlDoc.toXmlString(pretty: true, indent: '  '));
-  logger.d('✅ Added Android permission "$permissionName".');
+  logger.i('✅ Added Android permission "$permissionName".');
 }
 
 /// Adds a permission entry to iOS Info.plist if not already present.
@@ -108,7 +108,7 @@ Future<void> addAndroidPermission(String permissionName, Logger logger) async {
 Future<void> addiOSPermission(String key, String message, Logger logger) async {
   final file = File(iosPlistPath);
   if (!await file.exists()) {
-    logger.d('Info.plist not found at $iosPlistPath');
+    logger.i('Info.plist not found at $iosPlistPath');
     return;
   }
 
@@ -121,7 +121,7 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
 
   List<XmlName> keys = dict.findElements('key').map((e) => e.name).toList();
   if (keys.contains(XmlName(key))) {
-    logger.d('✔️ iOS permission "$key" already present.');
+    logger.i('✔️ iOS permission "$key" already present.');
     return;
   }
 
@@ -132,7 +132,7 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
   dict.children.add(stringElement);
 
   await file.writeAsString(xmlDoc.toXmlString(pretty: true, indent: '  '));
-  logger.d('✅ Added iOS permission "$key".');
+  logger.i('✅ Added iOS permission "$key".');
 }
 
 /// Main CLI entry point to add permissions to Android and iOS projects.
@@ -146,18 +146,18 @@ void main(List<String> args) async {
   final logger = Logger();
 
   if (args.isEmpty) {
-    logger.d(
+    logger.i(
         'Usage: add_permission <camera|microphone|location|storage|bluetooth|sensors|contacts|calendar|photos|notifications|speech|all>');
     exit(1);
   }
 
-  logger.d('Adding permission_handler to pubspec.yaml...');
+  logger.i('Adding permission_handler to pubspec.yaml...');
   final result =
       await Process.run('flutter', ['pub', 'add', 'permission_handler']);
   if (result.exitCode == 0) {
-    logger.d('permission_handler added successfully.');
+    logger.i('permission_handler added successfully.');
   } else {
-    logger.d('Failed to add permission_handler: ${result.stderr}');
+    logger.i('Failed to add permission_handler: ${result.stderr}');
   }
 
   final projectRoot = Directory.current.path;
@@ -251,7 +251,7 @@ void main(List<String> args) async {
             getMessage('speech recognition'), logger);
         break;
       default:
-        logger.d('Permission "$perm" not supported.');
+        logger.i('Permission "$perm" not supported.');
     }
   }
 
@@ -277,6 +277,6 @@ void main(List<String> args) async {
       await handle(permission);
     }
   } catch (e) {
-    logger.d('Error: $e');
+    logger.i('Error: $e');
   }
 }
