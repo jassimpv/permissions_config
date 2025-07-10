@@ -20,6 +20,11 @@ dependencies:
   xml: ^6.5.0
   logger: ^2.0.2
 
+dev_dependencies:
+  test: ^1.21.0
+  mockito: ^5.4.0
+  build_runner: ^2.4.6
+
 executables:
   permission_config: permission_config
 
