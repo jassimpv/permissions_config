@@ -1,6 +1,6 @@
 name: permission_config
 description: A Flutter CLI plugin that auto-adds Android/iOS permissions and generates permission handler logic.
-version: 0.0.10
+version: 0.0.11
 
 environment:
   sdk: ">=2.17.0 <4.0.0"
