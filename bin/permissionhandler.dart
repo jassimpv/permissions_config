@@ -23,12 +23,20 @@ class PermissionUtils {
       if (result.isGranted) {
         return true;
       } else if (result.isDenied) {
-        // Show rationale dialog and ask again or cancel
-        if(context.mounted){
-        return await _showDeniedDialog(context, rationaleMessage);}
+        // Show rationale dialog; if user chooses Retry, ask permission again
+        if (context.mounted) {
+          final retry = await _showDeniedDialog(context, rationaleMessage);
+          if (retry) {
+            final secondTry = await permission.request();
+            if (secondTry.isGranted) {
+              return true;
+            }
+          }
+        }
       } else if (result.isPermanentlyDenied) {
-       if(context.mounted){
-        return await _showOpenSettingsDialog(context);}
+        if (context.mounted) {
+          return await _showOpenSettingsDialog(context);
+        }
       }
 
     }
