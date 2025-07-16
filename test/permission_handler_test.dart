@@ -1,6 +1,8 @@
 import 'dart:io';
-import 'package:test/test.dart';
+
 import 'package:path/path.dart' as p;
+import 'package:test/test.dart';
+
 import '../bin/permissionhandler.dart';
 
 void main() {
@@ -37,6 +39,11 @@ void main() {
       expect(permissionHandlerContent.contains('isGranted'), isTrue);
       expect(permissionHandlerContent.contains('isDenied'), isTrue);
       expect(permissionHandlerContent.contains('isPermanentlyDenied'), isTrue);
+    });
+
+    test('should include retry logic after denied', () {
+      expect(permissionHandlerContent.contains('secondTry'), isTrue);
+      expect(permissionHandlerContent.contains('retry'), isTrue);
     });
 
     test('should contain user interaction elements', () {

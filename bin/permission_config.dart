@@ -1,8 +1,10 @@
 import 'dart:io';
-import 'package:xml/xml.dart';
-import 'package:path/path.dart' as p;
-import 'permissionhandler.dart';
+
 import 'package:logger/logger.dart';
+import 'package:path/path.dart' as p;
+import 'package:xml/xml.dart';
+
+import 'permissionhandler.dart';
 
 /// Path to the AndroidManifest.xml file
 const androidManifestPath = 'android/app/src/main/AndroidManifest.xml';
@@ -10,12 +12,13 @@ const androidManifestPath = 'android/app/src/main/AndroidManifest.xml';
 /// Path to the iOS Info.plist file
 const iosPlistPath = 'ios/Runner/Info.plist';
 
-/// Creates the `permission_handler.dart` file inside `lib/Utils`
+/// Creates the `permission_handler.dart` file inside `lib/utils`
 ///
 /// If the file already exists, it skips creation.
 Future<void> createPermissionHandlerFile(
     String projectRoot, Logger logger) async {
-  final utilsDir = Directory(p.join(projectRoot, 'lib', 'Utils'));
+  // Use lowercase path to follow Dart package conventions: lib/utils
+  final utilsDir = Directory(p.join(projectRoot, 'lib', 'utils'));
 
   if (!await utilsDir.exists()) {
     await utilsDir.create(recursive: true);
@@ -117,10 +120,23 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
   final contents = await file.readAsString();
   final xmlDoc = XmlDocument.parse(contents);
 
-  final dict = xmlDoc.findAllElements('dict').first;
+  // Locate the root <dict> that is a direct child of <plist>.
+  XmlElement? rootDict;
+  try {
+    rootDict = xmlDoc.rootElement.children
+        .whereType<XmlElement>()
+        .firstWhere((e) => e.name.local == 'dict');
+  } catch (_) {
+    rootDict = null;
+  }
+
+  if (rootDict == null) {
+    rootDict = XmlElement(XmlName('dict'));
+    xmlDoc.rootElement.children.add(rootDict);
+  }
 
   // Check if the key already exists
-  final existingKeys = dict.findElements('key');
+  final existingKeys = rootDict.findElements('key');
   if (existingKeys.any((e) => e.innerText == key)) {
     logger.i('✔️ iOS permission "$key" already present.');
     return;
@@ -129,8 +145,8 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
   final keyElement = XmlElement(XmlName('key'), [], [XmlText(key)]);
   final stringElement = XmlElement(XmlName('string'), [], [XmlText(message)]);
 
-  dict.children.add(keyElement);
-  dict.children.add(stringElement);
+  rootDict.children.add(keyElement);
+  rootDict.children.add(stringElement);
 
   await file.writeAsString(xmlDoc.toXmlString(pretty: true, indent: '  '));
   logger.i('✅ Added iOS permission "$key".');
@@ -166,6 +182,11 @@ void main(List<String> args) async {
 
   final permission = args[0].toLowerCase();
 
+  bool androidFileExists = File(androidManifestPath).existsSync();
+  bool iosFileExists = File(iosPlistPath).existsSync();
+  bool androidMissingFlag = false;
+  bool iosMissingFlag = false;
+
   String appName = 'This app';
   final pubspecFile = File('pubspec.yaml');
   if (await pubspecFile.exists()) {
@@ -189,67 +210,124 @@ void main(List<String> args) async {
   }
 
   Future<void> handle(String perm) async {
+    // helper closures
+    bool needAndroid() => perm != 'photos'; // photos is ios-only
+    bool needIOS() => perm != 'storage'; // storage android-only
+
+    if (needAndroid() && !androidFileExists) {
+      logger.w(
+          'Android project not found (missing AndroidManifest.xml). Skipping Android changes.');
+      androidMissingFlag = true;
+    }
+    if (needIOS() && !iosFileExists) {
+      logger.w(
+          'iOS project not found (missing Info.plist). Skipping iOS changes.');
+      iosMissingFlag = true;
+    }
     switch (perm) {
       case 'camera':
-        await addAndroidPermission('android.permission.CAMERA', logger);
-        await addiOSPermission(
-            'NSCameraUsageDescription', getMessage('camera'), logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission('android.permission.CAMERA', logger);
+        if (!iosMissingFlag)
+          await addiOSPermission(
+              'NSCameraUsageDescription', getMessage('camera'), logger);
         break;
       case 'microphone':
       case 'mic':
-        await addAndroidPermission('android.permission.RECORD_AUDIO', logger);
-        await addiOSPermission(
-            'NSMicrophoneUsageDescription', getMessage('microphone'), logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission('android.permission.RECORD_AUDIO', logger);
+        if (!iosMissingFlag)
+          await addiOSPermission(
+              'NSMicrophoneUsageDescription', getMessage('microphone'), logger);
         break;
       case 'location':
-        await addAndroidPermission(
-            'android.permission.ACCESS_FINE_LOCATION', logger);
-        await addAndroidPermission(
-            'android.permission.ACCESS_COARSE_LOCATION', logger);
-        await addiOSPermission('NSLocationWhenInUseUsageDescription',
-            getMessage('location'), logger);
-        await addiOSPermission('NSLocationAlwaysAndWhenInUseUsageDescription',
-            getMessage('location'), logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.ACCESS_FINE_LOCATION', logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.ACCESS_COARSE_LOCATION', logger);
+        if (!iosMissingFlag)
+          await addiOSPermission('NSLocationWhenInUseUsageDescription',
+              getMessage('location'), logger);
+        if (!iosMissingFlag)
+          await addiOSPermission('NSLocationAlwaysAndWhenInUseUsageDescription',
+              getMessage('location'), logger);
         break;
       case 'storage':
-        await addAndroidPermission(
-            'android.permission.READ_EXTERNAL_STORAGE', logger);
-        await addAndroidPermission(
-            'android.permission.WRITE_EXTERNAL_STORAGE', logger);
+        // Legacy permissions for API < 30
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.READ_EXTERNAL_STORAGE', logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.WRITE_EXTERNAL_STORAGE', logger);
+
+        // Scoped media permissions introduced in Android 13 (API 33)
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.READ_MEDIA_IMAGES', logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.READ_MEDIA_VIDEO', logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.READ_MEDIA_AUDIO', logger);
         break;
       case 'bluetooth':
-        await addAndroidPermission(
-            'android.permission.BLUETOOTH_CONNECT', logger);
-        await addiOSPermission('NSBluetoothAlwaysUsageDescription',
-            getMessage('Bluetooth'), logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.BLUETOOTH_CONNECT', logger);
+        // For iOS 13+ both keys are recommended.
+        if (!iosMissingFlag)
+          await addiOSPermission('NSBluetoothAlwaysUsageDescription',
+              getMessage('Bluetooth'), logger);
+        if (!iosMissingFlag)
+          await addiOSPermission('NSBluetoothPeripheralUsageDescription',
+              getMessage('Bluetooth peripherals'), logger);
         break;
       case 'sensors':
-        await addAndroidPermission('android.permission.BODY_SENSORS', logger);
-        await addiOSPermission(
-            'NSMotionUsageDescription', getMessage('sensor data'), logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission('android.permission.BODY_SENSORS', logger);
+        if (!iosMissingFlag)
+          await addiOSPermission(
+              'NSMotionUsageDescription', getMessage('sensor data'), logger);
         break;
       case 'contacts':
-        await addAndroidPermission('android.permission.READ_CONTACTS', logger);
-        await addiOSPermission(
-            'NSContactsUsageDescription', getMessage('contacts'), logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.READ_CONTACTS', logger);
+        if (!iosMissingFlag)
+          await addiOSPermission(
+              'NSContactsUsageDescription', getMessage('contacts'), logger);
         break;
       case 'calendar':
-        await addAndroidPermission('android.permission.READ_CALENDAR', logger);
-        await addAndroidPermission('android.permission.WRITE_CALENDAR', logger);
-        await addiOSPermission(
-            'NSCalendarsUsageDescription', getMessage('calendar'), logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.READ_CALENDAR', logger);
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.WRITE_CALENDAR', logger);
+        if (!iosMissingFlag)
+          await addiOSPermission(
+              'NSCalendarsUsageDescription', getMessage('calendar'), logger);
         break;
       case 'photos':
-        await addiOSPermission('NSPhotoLibraryUsageDescription',
-            getMessage('photo access'), logger);
+        if (!iosMissingFlag)
+          await addiOSPermission('NSPhotoLibraryUsageDescription',
+              getMessage('photo access'), logger);
         break;
       case 'notifications':
-        await addiOSPermission('NSUserNotificationAlertUsageDescription',
-            getMessage('notifications'), logger);
+        // Android 13+ needs explicit POST_NOTIFICATIONS runtime permission
+        if (!androidMissingFlag)
+          await addAndroidPermission(
+              'android.permission.POST_NOTIFICATIONS', logger);
+        // No Info.plist key is required for push notifications on iOS; skip.
         break;
       case 'speech':
-        await addiOSPermission('NSSpeechRecognitionUsageDescription',
-            getMessage('speech recognition'), logger);
+        if (!iosMissingFlag)
+          await addiOSPermission('NSSpeechRecognitionUsageDescription',
+              getMessage('speech recognition'), logger);
         break;
       default:
         logger.i('Permission "$perm" not supported.');
@@ -279,5 +357,10 @@ void main(List<String> args) async {
     }
   } catch (e) {
     logger.i('Error: $e');
+  }
+
+  if (androidMissingFlag || iosMissingFlag) {
+    // Return non-zero to indicate partial failure
+    exit(1);
   }
 }
