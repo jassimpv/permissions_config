@@ -120,10 +120,23 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
   final contents = await file.readAsString();
   final xmlDoc = XmlDocument.parse(contents);
 
-  final dict = xmlDoc.findAllElements('dict').first;
+  // Locate the root <dict> that is a direct child of <plist>.
+  XmlElement? rootDict;
+  try {
+    rootDict = xmlDoc.rootElement.children
+        .whereType<XmlElement>()
+        .firstWhere((e) => e.name.local == 'dict');
+  } catch (_) {
+    rootDict = null;
+  }
+
+  if (rootDict == null) {
+    rootDict = XmlElement(XmlName('dict'));
+    xmlDoc.rootElement.children.add(rootDict);
+  }
 
   // Check if the key already exists
-  final existingKeys = dict.findElements('key');
+  final existingKeys = rootDict.findElements('key');
   if (existingKeys.any((e) => e.innerText == key)) {
     logger.i('✔️ iOS permission "$key" already present.');
     return;
@@ -132,8 +145,8 @@ Future<void> addiOSPermission(String key, String message, Logger logger) async {
   final keyElement = XmlElement(XmlName('key'), [], [XmlText(key)]);
   final stringElement = XmlElement(XmlName('string'), [], [XmlText(message)]);
 
-  dict.children.add(keyElement);
-  dict.children.add(stringElement);
+  rootDict.children.add(keyElement);
+  rootDict.children.add(stringElement);
 
   await file.writeAsString(xmlDoc.toXmlString(pretty: true, indent: '  '));
   logger.i('✅ Added iOS permission "$key".');
@@ -232,8 +245,11 @@ void main(List<String> args) async {
       case 'bluetooth':
         await addAndroidPermission(
             'android.permission.BLUETOOTH_CONNECT', logger);
+        // For iOS 13+ both keys are recommended.
         await addiOSPermission('NSBluetoothAlwaysUsageDescription',
             getMessage('Bluetooth'), logger);
+        await addiOSPermission('NSBluetoothPeripheralUsageDescription',
+            getMessage('Bluetooth peripherals'), logger);
         break;
       case 'sensors':
         await addAndroidPermission('android.permission.BODY_SENSORS', logger);
@@ -259,11 +275,7 @@ void main(List<String> args) async {
         // Android 13+ needs explicit POST_NOTIFICATIONS runtime permission
         await addAndroidPermission(
             'android.permission.POST_NOTIFICATIONS', logger);
-
-        // On iOS permission key is unnecessary for push notifications, but we keep
-        // the rationale as an accessibility description for older docs/macOS.
-        await addiOSPermission('NSUserNotificationAlertUsageDescription',
-            getMessage('notifications'), logger);
+        // No Info.plist key is required for push notifications on iOS; skip.
         break;
       case 'speech':
         await addiOSPermission('NSSpeechRecognitionUsageDescription',
