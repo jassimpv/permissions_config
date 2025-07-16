@@ -141,6 +141,9 @@ dependencies:
       expect(
           manifestContent.contains('android.permission.RECORD_AUDIO'), isTrue);
       expect(manifestContent.contains('ACCESS_FINE_LOCATION'), isTrue);
+      // New Android 13 permission inserted by script
+      expect(manifestContent.contains('android.permission.POST_NOTIFICATIONS'),
+          isTrue);
 
       final plistContent =
           await File(p.join(tempDir.path, 'ios', 'Runner', 'Info.plist'))

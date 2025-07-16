@@ -215,10 +215,19 @@ void main(List<String> args) async {
             getMessage('location'), logger);
         break;
       case 'storage':
+        // Legacy permissions for API < 30
         await addAndroidPermission(
             'android.permission.READ_EXTERNAL_STORAGE', logger);
         await addAndroidPermission(
             'android.permission.WRITE_EXTERNAL_STORAGE', logger);
+
+        // Scoped media permissions introduced in Android 13 (API 33)
+        await addAndroidPermission(
+            'android.permission.READ_MEDIA_IMAGES', logger);
+        await addAndroidPermission(
+            'android.permission.READ_MEDIA_VIDEO', logger);
+        await addAndroidPermission(
+            'android.permission.READ_MEDIA_AUDIO', logger);
         break;
       case 'bluetooth':
         await addAndroidPermission(
@@ -247,6 +256,12 @@ void main(List<String> args) async {
             getMessage('photo access'), logger);
         break;
       case 'notifications':
+        // Android 13+ needs explicit POST_NOTIFICATIONS runtime permission
+        await addAndroidPermission(
+            'android.permission.POST_NOTIFICATIONS', logger);
+
+        // On iOS permission key is unnecessary for push notifications, but we keep
+        // the rationale as an accessibility description for older docs/macOS.
         await addiOSPermission('NSUserNotificationAlertUsageDescription',
             getMessage('notifications'), logger);
         break;
