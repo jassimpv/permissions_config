@@ -1,29 +1,35 @@
+## [0.0.13]
+
+- Fixed a typo in the permission documentation.
+- Added support for a new location permission variant on iOS.
+- Refactored permission status mapping logic for improved clarity.
+
 ## [0.0.12]
 
-- Fix: resolve permission check issue on iOS 17
-- Update: improve error messages for unsupported permissions
-- Refactor: optimize permission request flow for better performance
+- Resolved an issue with permission checks on iOS 17.
+- Enhanced error messages for unsupported permissions.
+- Optimized the permission request flow for better performance.
 
 ## [0.0.11]
 
-- Change logger level from debug to info for permission handling operations
+- Changed the logger level from debug to info for permission handling operations.
 
 ## [0.0.10]
 
-- Fix: add missing implements directive for flutter plugin
-- Refactor: reorganize environment and platform settings in pubspec.yaml
+- Fixed a missing implements directive for the Flutter plugin.
+- Refactored environment and platform settings in `pubspec.yaml` for better organization.
 
 ## [0.0.9]
 
-- Added support for **additional permissions**: storage, Bluetooth, sensors, contacts, calendar, photos, notifications, and speech recognition.
-- Introduced `"all"` option to add all supported permissions in one command.
+- Added support for additional permissions: storage, Bluetooth, sensors, contacts, calendar, photos, notifications, and speech recognition.
+- Introduced the `"all"` option to enable all supported permissions with a single command.
 
 ## [0.0.2]
 
-- Update the Readme.md file
+- Updated the `README.md` file.
 
 ## [0.0.1]
 
 - Initial release of `permission_config`.
-- Adds Android/iOS permission entries automatically.
-- Generates a `permission_handler.dart` with ready-to-use logic.
+- Automatically adds Android/iOS permission entries.
+- Generates a `permission_handler.dart` file with ready-to-use logic.

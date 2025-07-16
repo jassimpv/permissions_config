@@ -226,11 +226,13 @@ void main(List<String> args) async {
     }
     switch (perm) {
       case 'camera':
-        if (!androidMissingFlag)
+        if (!androidMissingFlag) {
           await addAndroidPermission('android.permission.CAMERA', logger);
-        if (!iosMissingFlag)
+        }
+        if (!iosMissingFlag) {
           await addiOSPermission(
               'NSCameraUsageDescription', getMessage('camera'), logger);
+        }
         break;
       case 'microphone':
       case 'mic':
