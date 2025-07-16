@@ -1,8 +1,10 @@
 import 'dart:io';
-import 'package:test/test.dart';
-import 'package:path/path.dart' as p;
+
 import 'package:logger/logger.dart';
+import 'package:path/path.dart' as p;
+import 'package:test/test.dart';
 import 'package:xml/xml.dart';
+
 import '../bin/permission_config.dart';
 
 void main() {
@@ -26,7 +28,7 @@ void main() {
     test('should create Utils directory if it does not exist', () async {
       await createPermissionHandlerFile(tempDir.path, logger);
 
-      final utilsDir = Directory(p.join(tempDir.path, 'lib', 'Utils'));
+      final utilsDir = Directory(p.join(tempDir.path, 'lib', 'utils'));
       expect(await utilsDir.exists(), isTrue);
     });
 
@@ -34,7 +36,7 @@ void main() {
       await createPermissionHandlerFile(tempDir.path, logger);
 
       final filePath =
-          p.join(tempDir.path, 'lib', 'Utils', 'permission_handler.dart');
+          p.join(tempDir.path, 'lib', 'utils', 'permission_handler.dart');
       final file = File(filePath);
       expect(await file.exists(), isTrue);
 
@@ -47,7 +49,7 @@ void main() {
       await createPermissionHandlerFile(tempDir.path, logger);
 
       final filePath =
-          p.join(tempDir.path, 'lib', 'Utils', 'permission_handler.dart');
+          p.join(tempDir.path, 'lib', 'utils', 'permission_handler.dart');
       final file = File(filePath);
 
       // Modify the file

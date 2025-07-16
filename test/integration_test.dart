@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:test/test.dart';
+
 import 'package:path/path.dart' as p;
+import 'package:test/test.dart';
 
 void main() {
   group('Main CLI Integration Tests', () {
@@ -117,7 +118,7 @@ dependencies:
       );
 
       final handlerFile =
-          File(p.join(tempDir.path, 'lib', 'Utils', 'permission_handler.dart'));
+          File(p.join(tempDir.path, 'lib', 'utils', 'permission_handler.dart'));
       expect(await handlerFile.exists(), isTrue);
 
       final content = await handlerFile.readAsString();

@@ -1,8 +1,10 @@
 import 'dart:io';
-import 'package:xml/xml.dart';
-import 'package:path/path.dart' as p;
-import 'permissionhandler.dart';
+
 import 'package:logger/logger.dart';
+import 'package:path/path.dart' as p;
+import 'package:xml/xml.dart';
+
+import 'permissionhandler.dart';
 
 /// Path to the AndroidManifest.xml file
 const androidManifestPath = 'android/app/src/main/AndroidManifest.xml';
@@ -10,12 +12,13 @@ const androidManifestPath = 'android/app/src/main/AndroidManifest.xml';
 /// Path to the iOS Info.plist file
 const iosPlistPath = 'ios/Runner/Info.plist';
 
-/// Creates the `permission_handler.dart` file inside `lib/Utils`
+/// Creates the `permission_handler.dart` file inside `lib/utils`
 ///
 /// If the file already exists, it skips creation.
 Future<void> createPermissionHandlerFile(
     String projectRoot, Logger logger) async {
-  final utilsDir = Directory(p.join(projectRoot, 'lib', 'Utils'));
+  // Use lowercase path to follow Dart package conventions: lib/utils
+  final utilsDir = Directory(p.join(projectRoot, 'lib', 'utils'));
 
   if (!await utilsDir.exists()) {
     await utilsDir.create(recursive: true);
