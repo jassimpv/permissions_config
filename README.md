@@ -74,3 +74,9 @@ Feel free to open an issue or submit a pull request! Your contributions are welc
 ---
 
 ### Happy coding! 🚀
+
+---
+
+## 👤 Contributors
+
+- [Khurshidddbek](https://github.com/Khurshidddbek)

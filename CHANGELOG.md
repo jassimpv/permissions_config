@@ -1,3 +1,9 @@
+## [0.0.12]
+
+- Fix: resolve permission check issue on iOS 17
+- Update: improve error messages for unsupported permissions
+- Refactor: optimize permission request flow for better performance
+
 ## [0.0.11]
 
 - Change logger level from debug to info for permission handling operations
